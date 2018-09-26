@@ -1,0 +1,34 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Sep 20, 2018, 8:59:52 PM
+    Author     : Hp
+*/
+A {
+    text-decoration: none;} 
+.header{
+    border-bottom: 2px solid white;
+    background: #C1C1FF;
+    margin: -20px -20px 0px -20px;
+    padding: 10px 20px;
+}
+
+.active {
+    background-color: #C1C1FF;
+    color: white;
+}
+
+.dropdown-container {
+    display: none;
+    background-color: #262626;
+    padding-left: 8px;
+}
+
+.logout:visited{color:#b30000;}
+.message{width:50%;display: inline-block;margin-bottom: 5px;text-align: center;}
+.success{background: #E3F2E1; color:#007B5A; border:1px solid #007B5A;}
+.warning{background: #FBDF9F; color:#E6A044; border:1px solid #E6A044;}
+.error{background: #FF9E97; color:#FF4637;   border:1px solid #FF4637;}
