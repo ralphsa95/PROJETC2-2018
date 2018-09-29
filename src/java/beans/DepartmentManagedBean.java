@@ -8,7 +8,11 @@ package beans;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.application.FacesMessage.Severity;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
@@ -32,6 +36,8 @@ public class DepartmentManagedBean {
     private String head;
     private String action;
     String codeFilter;
+    private boolean readonly;
+    private boolean active;
     SessionBean session = new SessionBean();
 
     public DepartmentManagedBean() {
@@ -66,6 +72,8 @@ public class DepartmentManagedBean {
         this.name = "";
         this.action = "";
         this.head = "";
+        this.readonly = false;
+        this.active=true;
     }
 
     public String getAction() {
@@ -92,11 +100,27 @@ public class DepartmentManagedBean {
         this.codeFilter = codeFilter;
     }
 
+    public boolean isReadonly() {
+        return readonly;
+    }
+
+    public void setReadonly(boolean readonly) {
+        this.readonly = readonly;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     public Map<String, String> getHeads() throws ClassNotFoundException {
-        ArrayList<User> list = session.getUsers("H", false);
+        ArrayList<User> list = session.getUsers("H", false, null, null);
         Map<String, String> heads = new LinkedHashMap<>();
         list.forEach((temp) -> {
-            heads.put(temp.getName(), temp.getCode());
+            heads.put(temp.getFullName(), temp.getCode());
         });
         return heads;
     }
@@ -118,14 +142,36 @@ public class DepartmentManagedBean {
             this.name = d.getName();
             this.action = "U";
             this.codeFilter = null;
+            this.readonly = true;
+            this.active=d.getActive();
         } else {
+            this.readonly = false;
             this.action = "C";
         }
     }
 
     public void save() {
-        Department d = new Department(code, name, head);
-        boolean res = session.manageDepartment(d, action);
+        String message = "";
+        Severity ms = null;
+        try {
+            Department d = new Department(code, name, head);
+            boolean res = session.manageDepartment(d, action);
+            if (res) {
+                message = "Department saved successfuly";
+                ms = FacesMessage.SEVERITY_INFO;
+            }
+        } catch (SQLException ex) {
+            message = "Error: " + ex.toString();
+            ms = FacesMessage.SEVERITY_ERROR;
+            //Logger.getLogger(DepartmentManagedBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        FacesContext.getCurrentInstance().addMessage(
+                null,
+                new FacesMessage(ms,
+                        message,
+                        message));
     }
+    
+    
 
 }

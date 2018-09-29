@@ -93,6 +93,11 @@ public class LoginBean {
         return (String) session.getAttribute("name");
     }
 
+    public String getUserCode() {
+        HttpSession session = SessionUtil.getSession();
+        return (String) session.getAttribute("code");
+    }
+    
     public String logout() {
         HttpSession session = SessionUtil.getSession();
         session.invalidate();
