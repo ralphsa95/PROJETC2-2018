@@ -52,4 +52,20 @@ public class SessionUtil {
     public static String getReqparam(String name) {
         return (String) FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get(name);
     }
+
+    public static boolean isAdmin() {
+        return "A".equalsIgnoreCase(SessionUtil.getUserRole());
+    }
+
+    public static boolean isTeacher() {
+        return "T".equalsIgnoreCase(SessionUtil.getUserRole());
+    }
+
+    public static boolean isHead() {
+        return "H".equalsIgnoreCase(SessionUtil.getUserRole());
+    }
+
+    public static boolean isStudent() {
+        return "S".equalsIgnoreCase(SessionUtil.getUserRole());
+    }
 }
