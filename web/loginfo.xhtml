@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+  <ui:define name="header">
+    <f:metadata>
+      <f:viewParam name="type" value="#{userManagedBean.type}" />
+    </f:metadata>
+  </ui:define>
+  <ui:include src="style.html" />
+  <body style="text-align: center;">
+    <f:view>
+      <ui:include src="side.html" />
+      <div class="main">
+        <div class="header">
+          <span style="float:right;">
+            <h:form>
+              <h:commandLink action="#{loginBean.logout}" value="Logout" class="logout" ></h:commandLink>
+            </h:form>
+          </span>
+          Welcome #{loginBean.name}
+        </div>
+        <h:form id="userlog">
+          <table border="0" cellspacing="5px" style="margin:30px 0px 0px 30px;">
+            <c:if test="#{param['type'] eq 'username'}">
+              <tr><td>Current User</td><td><h:inputText value="#{userManagedBean.old}" required="true" id="currentUser" /></td></tr>
+              <tr><td>New User</td><td><h:inputText value="#{userManagedBean.new1}" required="true" id="newUser" /></td></tr>
+              <tr><td>Retype New User</td><td><h:inputText value="#{userManagedBean.new2}"  required="true" id="retypeNewUser" /></td></tr>
+            </c:if>
+            <c:if test="#{param['type'] eq 'pass'}">
+              <tr><td>Current Password</td><td><h:inputSecret value="#{userManagedBean.old}" required="true"   id="currentPass" /></td></tr>
+              <tr><td>New Password</td><td><h:inputSecret value="#{userManagedBean.new1}" required="true"  id="newPass" /></td></tr>
+              <tr><td>Retype New Password</td><td><h:inputSecret value="#{userManagedBean.new2}" required="true"   id="retypeNewPass" /></td></tr>
+            </c:if>
+            <tr>
+              <td colspan="2">
+                <h:commandButton value="Save" action="#{userManagedBean.resetLogInfo}"  >
+                  <f:param name="type" value="#{param['type']}" />
+                </h:commandButton>
+              </td>
+            </tr>
+          </table>
+          <h:message for="loginsave" /> 
+        </h:form>
+      </div>
+    </f:view>
+  </body>
+  <ui:include src="after.html" />
+</html>

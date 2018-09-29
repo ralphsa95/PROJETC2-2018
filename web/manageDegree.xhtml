@@ -10,12 +10,19 @@
       <f:viewAction action="#{degreeManagedBean.onload}" />  
     </f:metadata>
   </ui:define>
-  <ui:include src="style.xhtml" />
+  <ui:include src="style.html" />
   <body>
     <f:view>
-      <ui:include src="side.xhtml" />
+      <ui:include src="side.html" />
       <div class="main">
-        <ui:include src="header.xhtml" />
+        <div class="header">
+          <span style="float:right;">
+            <h:form>
+              <h:commandLink action="#{loginBean.logout}" value="Logout" class="logout" ></h:commandLink>
+            </h:form>
+          </span>
+          Welcome #{loginBean.name}
+        </div>
         <h:form>
         </h:form>
 
@@ -24,7 +31,7 @@
       </div>
     </f:view>
   </body>
-  <ui:include src="after.xhtml" />
+  <ui:include src="after.html" />
 </html>
 
 

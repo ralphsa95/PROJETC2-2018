@@ -5,43 +5,130 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
-  <h:head>
-    <style>
-      tr,th,td{border: solid 1px}
-      table{width: 70%; margin: auto;}
-      form,h1{text-align: center}
-    </style>
-    <ui:include src="style.xhtml" />
-  </h:head>
+  <ui:define name="header">
+    <f:metadata>
+      <f:viewParam name="dep" value="#{degreeManagedBean.depFilter}" />
+    </f:metadata>
+  </ui:define>
+  <style>
+    tr,th,td{border: solid 1px}
+    table{width: 70%; margin: auto;}
+    form,h1{text-align: center}
+  </style>
+  <ui:include src="style.html" />
   <body>
-    <ui:include src="side.xhtml" />
+    <ui:include src="side.html" />
     <div class="main">
-      <ui:include src="header.xhtml" />
+      <div class="header">
+        <span style="float:right;">
+          <h:form>
+            <h:commandLink action="#{loginBean.logout}" value="Logout" class="logout" ></h:commandLink>
+          </h:form>
+        </span>
+        Welcome #{loginBean.name}
+      </div>
       <f:view>
-        <h:form>
-          <c:if test="#{param['list'] eq 'departments'}">
-            <h1>Departments</h1>
-            <h:dataTable value="#{departmentManagedBean.departments}" var="item" cellspacing="0"
+        <c:if test="#{param['list'] eq 'department'}">
+          <h1>Departments</h1>
+          <h:dataTable value="#{departmentManagedBean.departments}" var="item" cellspacing="0"
+                       style="border-collapse: collapse;">
+            <h:column>
+              <f:facet name="header">Code</f:facet>
+              <h:link value="#{item.code}" outcome="manageDepartment" includeViewParams="true">
+                <f:param name="code" value="#{item.code}"/>
+              </h:link>
+            </h:column>
+            <h:column>
+              <f:facet name="header">Name</f:facet>
+              <h:outputText value="#{item.name}"></h:outputText>
+            </h:column>
+            <h:column>
+              <f:facet name="header">Head</f:facet>
+              <h:outputText value="#{item.headName}"></h:outputText>
+            </h:column>
+            <h:column>
+              <h:link value="View Degrees" outcome="search.xhtml?list=degree" >
+                <f:param name="dep" value="#{item.code}"/>
+              </h:link>
+            </h:column>
+          </h:dataTable>
+        </c:if>
+        <c:if test="#{param['list'] eq 'degree'}">
+          <h1>Degrees</h1>
+          <h:form>
+            <h:dataTable value="#{degreeManagedBean.degrees}" var="degree" cellspacing="0"
                          style="border-collapse: collapse;">
               <h:column>
                 <f:facet name="header">Code</f:facet>
-                <h:link value="#{item.code}" outcome="manageDepartment" includeViewParams="true">
-                  <f:param name="code" value="#{item.code}"/>
+                <h:link value="#{degree.code}" outcome="manageDegree" includeViewParams="true">
+                  <f:param name="code" value="#{degree.code}"/>
                 </h:link>
               </h:column>
               <h:column>
                 <f:facet name="header">Name</f:facet>
-                <h:outputText value="#{item.name}"></h:outputText>
+                <h:outputText value="#{degree.name}"></h:outputText>
+              </h:column>                        
+              <h:column>
+                <f:facet name="header">Credits</f:facet>
+                <h:outputText value="#{degree.credits}"></h:outputText>
               </h:column>
               <h:column>
-                <f:facet name="header">Head</f:facet>
-                <h:outputText value="#{item.headName}"></h:outputText>
+                <h:link value="View Courses" outcome="manageDegreeCourse.xhtml" >
+                  <f:param name="degree" value="#{degree.code}"/>
+                </h:link>
               </h:column>
             </h:dataTable>
-          </c:if>
-        </h:form>
+          </h:form>
+        </c:if>
+        <c:if test="#{param['list'] eq 'user'}">
+          <h1>Users</h1>
+          <h:form>
+            <div style="text-align: left; margin-bottom: 15px;">
+              Role &nbsp;
+              <h:selectOneMenu value="#{userManagedBean.roleFilter}" required="true" >
+                <f:selectItems value="#{userManagedBean.roles}"/>
+              </h:selectOneMenu>
+              &nbsp;
+              Code
+              &nbsp;
+              <h:inputText value="#{userManagedBean.codeFilter}"   />
+              Name
+              &nbsp;
+              <h:inputText value="#{userManagedBean.nameFilter}"   />
+              &nbsp;&nbsp;
+              <h:commandButton value="search" actionListener="#{userManagedBean.search}" action="search.xhtml">
+                <f:param name="list" value="user" />
+              </h:commandButton>
+            </div>
+            <h:dataTable value="#{userManagedBean.userslist}" var="user" cellspacing="0"
+                         style="border-collapse: collapse;width:100% !important;">
+              <h:column>
+                <f:facet name="header">Code</f:facet>
+                <h:link value="#{user.code}" outcome="manageUser" includeViewParams="true">
+                  <f:param name="code" value="#{user.code}"/>
+                </h:link>
+              </h:column>
+              <h:column>
+                <f:facet name="header">Name</f:facet>
+                <h:outputText value="#{user.fullName}"></h:outputText>
+              </h:column>
+              <h:column>
+                <f:facet name="header">Role</f:facet>
+                <h:outputText value="#{user.roleName}"></h:outputText>
+              </h:column>
+              <h:column>
+                <f:facet name="header">Phone</f:facet>
+                <h:outputText value="#{user.phone}"></h:outputText>
+              </h:column>
+              <h:column>
+                <f:facet name="header">Mail</f:facet>
+                <h:outputText value="#{user.mail}"></h:outputText>
+              </h:column>        
+            </h:dataTable>  
+          </h:form>
+        </c:if>
       </f:view>
     </div>
-    </body>
-    <ui:include src="after.xhtml" />
+  </body>
+  <ui:include src="after.html" />
 </html>

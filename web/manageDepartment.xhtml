@@ -10,22 +10,30 @@
       <f:viewAction action="#{departmentManagedBean.onload}" />  
     </f:metadata>
   </ui:define>
-  <ui:include src="style.xhtml" />
+  <ui:include src="style.html" />
   <body>
     <f:view>
-      <ui:include src="side.xhtml" />
+      <ui:include src="side.html" />
       <div class="main">
-        <ui:include src="header.xhtml" />
+        <div class="header">
+          <span style="float:right;">
+            <h:form>
+              <h:commandLink action="#{loginBean.logout}" value="Logout" class="logout" ></h:commandLink>
+            </h:form>
+          </span>
+          Welcome #{loginBean.name}
+        </div>
         <div style="text-align: center;">
           <h:form>
             <table border="0" cellspacing="20" width="40%" style="display: inline-block; margin-top: 80px">
               <tbody>
                 <tr>
-                  <td>Code</td><td><h:inputText value="#{departmentManagedBean.code}" required="true"  /></td>
+                  <td>Code</td><td><h:inputText value="#{departmentManagedBean.code}" required="true" readonly="#{departmentManagedBean.readonly}"  /></td>
                   <td>Name</td><td><h:inputText value="#{departmentManagedBean.name}" required="true" /></td>
                 </tr>
                 <tr>
-                  <td>Head</td><td>
+                  <td>Head</td>
+                  <td>
                     <h:selectOneMenu value="#{departmentManagedBean.head}" required="true" style="width:100%">
                       <f:selectItems value="#{departmentManagedBean.heads}"/>
                     </h:selectOneMenu>
@@ -37,12 +45,23 @@
                 </tr>
               </tbody>
             </table>
+            <div class="actdeactdel">
+              <h:commandLink  rendered="#{departmentManagedBean.readonly}"
+                              value="#{departmentManagedBean.active ? 'Deactivate' : 'Activate'}" action="#{commonBean.actdeact('department', departmentManagedBean.code, !departmentManagedBean.active)}" >
+              </h:commandLink> 
+              &nbsp;
+              <h:commandLink onclick="if (!confirm('Are you sure you want to delete this department ?'))
+                          return false" rendered="#{departmentManagedBean.readonly}"
+                             value="Delete" action="#{commonBean.delete('department', departmentManagedBean.code)}" >
 
+              </h:commandLink> 
+            </div>
+            <h:message for="saveDep" /> 
           </h:form>
         </div>
       </div>
     </f:view>
   </body>
-  <ui:include src="after.xhtml" />
+  <ui:include src="after.html" />
 </html>
 
