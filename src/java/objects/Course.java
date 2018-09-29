@@ -9,24 +9,19 @@ package objects;
  *
  * @author Hp
  */
-public class Degree {
-
+public class Course {
     private String code;
     private String name;
     private int credits;
-    private double price;
-    private String department;
-    private String departmentName;
     private boolean active;
+    private String teacher;
 
-    public Degree(String code, String name, String department, String depName, int credits, double price , Boolean active) {
+    public Course(String code, String name, int credits, String teacher) {
         this.code = code;
         this.name = name;
         this.credits = credits;
-        this.price = price;
-        this.department = department;
-        this.departmentName = depName;
-        this.active = active;
+        this.active = true;
+        this.teacher = teacher;
     }
 
     public String getCode() {
@@ -53,30 +48,6 @@ public class Degree {
         this.credits = credits;
     }
 
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department;
-    }
-
-    public String getDepartmentName() {
-        return departmentName;
-    }
-
-    public void setDepartmentName(String departmentName) {
-        this.departmentName = departmentName;
-    }
-
     public boolean isActive() {
         return active;
     }
@@ -85,4 +56,16 @@ public class Degree {
         this.active = active;
     }
 
+    public String getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(String teacher) {
+        this.teacher = teacher;
+    }
+    
+    
+    
+    
+    
 }

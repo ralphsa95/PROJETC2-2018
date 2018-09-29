@@ -10,26 +10,35 @@ package objects;
  * @author Hp
  */
 public class User {
+
     private String code;
-    private String name;
+    private String fullName;
     private String role;
     private String roleName;
     private String username;
     private String password;
     private boolean active;
+    private String name;
+    private String family;
+    private int phone;
+    private String mail;
+    private String adr;
 
-    public User(String code, String name, String role, String roleName, String username, String password, boolean active) {
+    public User(String code, String role, String roleName, String username, String password, boolean active, String name, String family, String mail, int phone, String adr) {
         this.code = code;
-        this.name = name;
+        this.fullName = name + " " + family;
         this.role = role;
         this.roleName = roleName;
         this.username = username;
         this.password = password;
         this.active = active;
+        this.name = name;
+        this.family = family;
+        this.adr =adr;
+        this.phone = phone;
+        this.mail = mail;
     }
 
-    
-    
     public String getCode() {
         return code;
     }
@@ -38,12 +47,12 @@ public class User {
         this.code = code;
     }
 
-    public String getName() {
-        return name;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getRole() {
@@ -85,6 +94,46 @@ public class User {
     public void setRoleName(String roleName) {
         this.roleName = roleName;
     }
-    
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getFamily() {
+        return family;
+    }
+
+    public void setFamily(String family) {
+        this.family = family;
+    }
+
+    public int getPhone() {
+        return phone;
+    }
+
+    public void setPhone(int phone) {
+        this.phone = phone;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
+    public String getAdr() {
+        return adr;
+    }
+
+    public void setAdr(String adr) {
+        this.adr = adr;
+    }
+
     
 }
