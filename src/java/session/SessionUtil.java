@@ -39,6 +39,15 @@ public class SessionUtil {
             return null;
         }
     }
+    
+    public static String getName() {
+        HttpSession session = getSession();
+        if (session != null) {
+            return (String) session.getAttribute("name");
+        } else {
+            return null;
+        }
+    }
 
     public static String getUserCode() {
         HttpSession session = getSession();
@@ -49,8 +58,22 @@ public class SessionUtil {
         }
     }
 
-    public static String getReqparam(String name) {
-        return (String) FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get(name);
+    public static String getYear() {
+        HttpSession session = getSession();
+        if (session != null) {
+            return (String) session.getAttribute("year");
+        } else {
+            return null;
+        }
+    }
+
+    public static String getSemester() {
+        HttpSession session = getSession();
+        if (session != null) {
+            return (String) session.getAttribute("semester");
+        } else {
+            return null;
+        }
     }
 
     public static boolean isAdmin() {
@@ -68,4 +91,5 @@ public class SessionUtil {
     public static boolean isStudent() {
         return "S".equalsIgnoreCase(SessionUtil.getUserRole());
     }
+
 }
