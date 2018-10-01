@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
   </h:head>
   <ui:include src="style.html" />
-  <body>
+  <h:body>
     <ui:include src="side.html" />
     <div class="main">
       <div class="header">
@@ -18,9 +18,10 @@
           </h:form>
         </span>
         Welcome #{loginBean.name}
+        <div style="font-size: 12px; margin-top: 7px; color:#b30000">Year #{loginBean.year} &nbsp;Semester #{loginBean.semester}</div>
       </div>
-      hi
+      This is the home page
     </div>
-  </body>
+  </h:body>
   <ui:include src="after.html" />
 </html>

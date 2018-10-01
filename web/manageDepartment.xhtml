@@ -11,7 +11,7 @@
     </f:metadata>
   </ui:define>
   <ui:include src="style.html" />
-  <body>
+  <h:body>
     <f:view>
       <ui:include src="side.html" />
       <div class="main">
@@ -22,6 +22,7 @@
             </h:form>
           </span>
           Welcome #{loginBean.name}
+          <div style="font-size: 12px; margin-top: 7px; color:#b30000">Year #{loginBean.year} &nbsp;Semester #{loginBean.semester}</div>
         </div>
         <div style="text-align: center;">
           <h:form>
@@ -61,7 +62,7 @@
         </div>
       </div>
     </f:view>
-  </body>
+  </h:body>
   <ui:include src="after.html" />
 </html>
 

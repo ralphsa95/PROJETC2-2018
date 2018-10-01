@@ -15,7 +15,7 @@
     .col2, .col3{width: 10%; text-align: right}
     .col4{width: 10%;}
   </style>
-  <body>
+  <h:body>
     <f:view>
       <ui:include src="side.html" />
       <div class="main">
@@ -26,9 +26,10 @@
             </h:form>
           </span>
           Welcome #{loginBean.name}
+          <div style="font-size: 12px; margin-top: 7px; color:#b30000">Year #{loginBean.year} &nbsp;Semester #{loginBean.semester}</div>
         </div>
         <div style="text-align: center;">
-          <h:form style="margin: 40px 0px 40px 0px; font-size: 14px; text-align: left;">
+          <h:form style="margin-top: 40px; font-size: 14px; text-align: left;" rendered="#{loginBean.admin || loginBean.head}">
             Course&nbsp;
             <h:selectOneMenu value="#{manageDegreeCourseBean.course}"  required="true" style="margin-right: 30px;">
               <f:selectItems value="#{manageDegreeCourseBean.courses}"/>
@@ -38,7 +39,7 @@
             <h:commandButton action="#{manageDegreeCourseBean.add}" value="Add" />
           </h:form>
           <h:dataTable value="#{manageDegreeCourseBean.degreeCourses}" var="item" cellspacing="0" border="1"
-                       style="border-collapse: collapse;" columnClasses="col1,col2,col3,col4">
+                       style="border-collapse: collapse; margin-top: 40px;" columnClasses="col1,col2,col3,col4">
             <h:column>
               <f:facet name="header">Course</f:facet>
               <h:outputText value="#{item.course} #{item.courseName}"></h:outputText>
@@ -51,7 +52,7 @@
               <f:facet name="header">Credits</f:facet>
               <h:outputText value="#{item.credits}"></h:outputText>
             </h:column>
-            <h:column>
+            <h:column rendered="#{loginBean.admin || loginBean.head}">
               <f:facet name="header"></f:facet>
               <f:view>
                 <h:form>
@@ -66,7 +67,7 @@
         </div>
       </div>
     </f:view>
-  </body>
+  </h:body>
   <ui:include src="after.html" />
 </html>
 

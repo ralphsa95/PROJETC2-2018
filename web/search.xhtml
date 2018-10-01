@@ -16,7 +16,7 @@
     form,h1{text-align: center}
   </style>
   <ui:include src="style.html" />
-  <body>
+  <h:body style="text-align: center;">
     <ui:include src="side.html" />
     <div class="main">
       <div class="header">
@@ -26,6 +26,7 @@
           </h:form>
         </span>
         Welcome #{loginBean.name}
+        <div style="font-size: 12px; margin-top: 7px; color:#b30000">Year #{loginBean.year} &nbsp;Semester #{loginBean.semester}</div>
       </div>
       <f:view>
         <c:if test="#{param['list'] eq 'department'}">
@@ -34,7 +35,7 @@
                        style="border-collapse: collapse;">
             <h:column>
               <f:facet name="header">Code</f:facet>
-              <h:link value="#{item.code}" outcome="manageDepartment" includeViewParams="true">
+              <h:link value="#{item.code}" outcome="manageDepartment" includeViewParams="true" disabled="#{!(loginBean.admin ||loginBean.head )}" >
                 <f:param name="code" value="#{item.code}"/>
               </h:link>
             </h:column>
@@ -47,7 +48,7 @@
               <h:outputText value="#{item.headName}"></h:outputText>
             </h:column>
             <h:column>
-              <h:link value="View Degrees" outcome="search.xhtml?list=degree" >
+              <h:link value="Degrees" outcome="search.xhtml?list=degree" >
                 <f:param name="dep" value="#{item.code}"/>
               </h:link>
             </h:column>
@@ -60,7 +61,7 @@
                          style="border-collapse: collapse;">
               <h:column>
                 <f:facet name="header">Code</f:facet>
-                <h:link value="#{degree.code}" outcome="manageDegree" includeViewParams="true">
+                <h:link value="#{degree.code}" outcome="manageDegree" includeViewParams="true" disabled="#{!(loginBean.admin ||loginBean.head )}">
                   <f:param name="code" value="#{degree.code}"/>
                 </h:link>
               </h:column>
@@ -73,7 +74,11 @@
                 <h:outputText value="#{degree.credits}"></h:outputText>
               </h:column>
               <h:column>
-                <h:link value="View Courses" outcome="manageDegreeCourse.xhtml" >
+                <f:facet name="header">Cr.Price</f:facet>
+                <h:outputText value="#{degree.price}"></h:outputText>
+              </h:column>              
+              <h:column>
+                <h:link value="Courses" outcome="manageDegreeCourse.xhtml" >
                   <f:param name="degree" value="#{degree.code}"/>
                 </h:link>
               </h:column>
@@ -127,8 +132,50 @@
             </h:dataTable>  
           </h:form>
         </c:if>
+        <c:if test="#{param['list'] eq 'mystudents'}">
+          <h:form>
+            <div style="text-align: left; margin-bottom: 15px;">
+              Course &nbsp;
+              <h:selectOneMenu value="#{studentCourseBean.course}" required="true" >
+                <f:selectItems value="#{studentCourseBean.teacherCourse}"/>
+              </h:selectOneMenu> &nbsp;   
+              <h:commandButton actionListener="#{studentCourseBean.search}"  value="Search" action="search.xhtml">
+                <f:param name="list" value="mystudents" />
+                <f:param name="grades" value="yes" />
+              </h:commandButton>
+            </div>  
+          </h:form>
+          <h:form>
+            <h:dataTable value="#{studentCourseBean.studentsgrades}" var="item" cellspacing="0">
+              <h:column>
+                <f:facet name="header">Student</f:facet>
+                <h:outputText value="#{item.studentName}"></h:outputText>
+              </h:column>
+              <c:if test="#{param['grades'] eq 'yes'}">
+                <h:column>
+                  <f:facet name="header">Grade 1</f:facet>
+                  <h:inputText value="#{item.grade1}" style="width:100%"></h:inputText>
+                </h:column>
+                <h:column>
+                  <f:facet name="header">Grade 2</f:facet>
+                  <h:inputText value="#{item.grade2}" style="width:100%"></h:inputText>
+                </h:column>
+                <h:column>
+                  <f:facet name="header">Final Grade</f:facet>
+                  <h:inputText value="#{item.finalGrade}" style="width:100%"></h:inputText>
+                </h:column>
+              </c:if>
+            </h:dataTable>
+            <h:commandButton actionListener="#{studentCourseBean.save}"  value="Save" action="search.xhtml">
+              <f:param name="list" value="mystudents" />
+              <f:param name="grades" value="yes" />
+            </h:commandButton>
+            <h:message for="save"/>
+          </h:form>
+
+        </c:if>
       </f:view>
     </div>
-  </body>
+  </h:body>
   <ui:include src="after.html" />
 </html>
