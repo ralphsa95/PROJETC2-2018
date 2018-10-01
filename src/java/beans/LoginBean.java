@@ -89,13 +89,19 @@ public class LoginBean {
     }
 
     public String getName() {
-        HttpSession session = SessionUtil.getSession();
-        return (String) session.getAttribute("name");
+        return SessionUtil.getName();
     }
 
     public String getUserCode() {
-        HttpSession session = SessionUtil.getSession();
-        return (String) session.getAttribute("code");
+        return SessionUtil.getUserCode();
+    }
+
+    public String getYear() {
+        return SessionUtil.getYear();
+    }
+
+    public String getSemester() {
+        return SessionUtil.getSemester();
     }
     
     public String logout() {
@@ -103,20 +109,20 @@ public class LoginBean {
         session.invalidate();
         return "login";
     }
-    
-    public boolean isAdmin(){
+
+    public boolean isAdmin() {
         return "A".equalsIgnoreCase(SessionUtil.getUserRole());
     }
-    
-    public boolean isTeacher(){
+
+    public boolean isTeacher() {
         return "T".equalsIgnoreCase(SessionUtil.getUserRole());
     }
-        
-    public boolean isHead(){
+
+    public boolean isHead() {
         return "H".equalsIgnoreCase(SessionUtil.getUserRole());
     }
-    
-    public boolean isStudent(){
+
+    public boolean isStudent() {
         return "S".equalsIgnoreCase(SessionUtil.getUserRole());
     }
 

@@ -6,6 +6,8 @@
 package beans;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
@@ -33,22 +35,23 @@ public class DegreeManagedBean {
     String depFilter;
     SessionBean session = new SessionBean();
 
-    public void onload(){
-        if(codeFilter != null){
-          Degree d = session.getDegree(codeFilter, null).get(0);
-          this.code = d.getCode();
-          this.name = d.getName();
-          
-          codeFilter = null;
+    public void onload() {
+        if (codeFilter != null) {
+            Degree d = session.getDegree(codeFilter, null).get(0);
+            this.code = d.getCode();
+            this.name = d.getName();
+
+            codeFilter = null;
         }
     }
-    public void save(){
+
+    public void save() {
     }
 
     public DegreeManagedBean() {
-        depFilter  = null;
+        depFilter = null;
     }
-    
+
     public String getCode() {
         return code;
     }
@@ -120,7 +123,7 @@ public class DegreeManagedBean {
     public void setReadonly(boolean readonly) {
         this.readonly = readonly;
     }
-    
+
     public ArrayList<Degree> getDegrees() {
         return session.getDegree(null, depFilter);
     }
@@ -132,5 +135,13 @@ public class DegreeManagedBean {
     public void setDepFilter(String depFilter) {
         this.depFilter = depFilter;
     }
-        
+
+    public Map<String, String> getDegreesList() throws ClassNotFoundException {
+        ArrayList<Degree> list = session.getDegree(null, null);
+        Map<String, String> degs = new LinkedHashMap<>();
+        list.forEach((temp) -> {
+            degs.put(temp.getName(), temp.getCode());
+        });
+        return degs;
+    }
 }

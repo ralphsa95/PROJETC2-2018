@@ -6,6 +6,8 @@
 package beans;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -46,5 +48,16 @@ public class CommonBean {
 
     public boolean isStudent() {
         return SessionUtil.isStudent();
+    }
+
+    public void dbBackup() {
+        try {
+            String executeCmd = "mysqldump -u root -padmin uni -r backup.sql";
+            Process runtimeProcess = Runtime.getRuntime().exec(executeCmd);
+            int processComplete = runtimeProcess.waitFor();
+        } catch (Exception ex) {
+            Logger.getLogger(CommonBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 }

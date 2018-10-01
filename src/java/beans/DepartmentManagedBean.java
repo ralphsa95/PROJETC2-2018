@@ -73,7 +73,7 @@ public class DepartmentManagedBean {
         this.action = "";
         this.head = "";
         this.readonly = false;
-        this.active=true;
+        this.active = true;
     }
 
     public String getAction() {
@@ -125,6 +125,15 @@ public class DepartmentManagedBean {
         return heads;
     }
 
+    public Map<String, String> getDepartmentsList() throws ClassNotFoundException {
+        ArrayList<Department> list = session.getDepartment(null);
+        Map<String, String> deps = new LinkedHashMap<>();
+        list.forEach((temp) -> {
+            deps.put(temp.getName(), temp.getCode());
+        });
+        return deps;
+    }
+
     public ArrayList<Department> getDepartments() throws ClassNotFoundException {
         return session.getDepartment(null);
     }
@@ -143,7 +152,7 @@ public class DepartmentManagedBean {
             this.action = "U";
             this.codeFilter = null;
             this.readonly = true;
-            this.active=d.getActive();
+            this.active = d.getActive();
         } else {
             this.readonly = false;
             this.action = "C";
