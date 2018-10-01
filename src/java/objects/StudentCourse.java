@@ -40,6 +40,17 @@ public class StudentCourse {
        this.finalGrade = finalgrade;
        this.course = course;
     }
+    
+    public StudentCourse(String course, String courseName, int credits, int cur_semester, int cur_year, double grade1, double grade2, double finalgrade) {
+     this.course = course;
+     this.courseName = courseName;
+     this.credits = credits;
+     this.cur_semester = cur_semester;
+     this.cur_year = cur_year;
+     this.grade1 = grade1;
+     this.grade2 = grade2;
+     this.finalGrade = finalgrade;
+    }
 
     public String getCourse() {
         return course;
