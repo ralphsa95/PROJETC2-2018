@@ -16,6 +16,11 @@ public class Course {
     private boolean active;
     private String teacher;
 
+    public Course(String code, String name) {
+        this.code = code;
+        this.name = name;
+    }
+    
     public Course(String code, String name, int credits, String teacher) {
         this.code = code;
         this.name = name;

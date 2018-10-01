@@ -37,6 +37,11 @@ public class Login {
                 session.setAttribute("name", rs.getString(2));
                 session.setAttribute("role", rs.getString(3));
                 session.setAttribute("code", rs.getString(4));
+                PreparedStatement px = con.prepareStatement("Select number, year from semester order by year desc, number desc LIMIT 1");
+                ResultSet rt = px.executeQuery();
+                rt.next();
+                session.setAttribute("semester", rt.getString(1));
+                session.setAttribute("year", rt.getString(2));
                 return true;
             }
         } catch (SQLException ex) {
