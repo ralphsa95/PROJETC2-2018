@@ -6,26 +6,32 @@
       </button>
       <div class="dropdown-container">
         <a href="search.xhtml?list=department">Departments List</a>
-        <a href="manageDepartment.xhtml">New Department</a>
+        <a href="manageDepartment.xhtml" style="display: #{loginBean.admin || loginBean.head ? 'block' : 'none'}">New Department</a>
       </div>
       <button class="dropdown-btn">Degrees
         <i class="fa fa-caret-down"></i>
       </button>
       <div class="dropdown-container">
         <a href="search.xhtml?list=degree">Degrees List</a>
-        <a href="?manageDegree">New Degree</a>
+        <a href="?manageDegree" style="display: #{loginBean.admin || loginBean.head ? 'block' : 'none'}">New Degree</a>
       </div>
-      <button class="dropdown-btn">Courses
+      <button class="dropdown-btn" style="display: #{loginBean.admin || loginBean.head ? 'block' : 'none'}">Courses
         <i class="fa fa-caret-down"></i>
       </button>
       <div class="dropdown-container">
-        <a href="?page=search">Courses List</a>
         <a href="?page=coursemgt">New Course</a>
       </div>
-      <a href="registration.xhtml">Courses Choice</a>
-      <a href="?page=home">Check Grades</a>
-      <a href="search.xhtml?list=mystudents&amp;grades=yes">Modify Grades</a>
-      <a href="?page=home">My Courses</a>
+      <a href="registration.xhtml" style="display: #{loginBean.student ? 'block' : 'none'}">Courses Choice</a>
+      <button class="dropdown-btn" style="display: #{loginBean.student ? 'block' : 'none'}">Check Grades
+        <i class="fa fa-caret-down"></i>
+      </button>
+      <div class="dropdown-container">
+        <a href="search.xhtml?list=mycourses&amp;all=false&amp;grades=yes">Current</a>
+        <a href="search.xhtml?list=mycourses&amp;all=true&amp;grades=yes">All</a>
+      </div>
+      <a href="search.xhtml?list=mystudents&amp;grades=no" style="display: #{loginBean.teacher ? 'block' : 'none'}">My Students</a>
+      <a href="search.xhtml?list=mystudents&amp;grades=yes" style="display: #{loginBean.teacher ? 'block' : 'none'}">Modify Grades</a>
+      <a href="search.xhtml?list=mycourses&amp;all=false&amp;grades=no" style="display: #{loginBean.student ? 'block' : 'none'}">My Courses</a>
       <button class="dropdown-btn">Login Info
         <i class="fa fa-caret-down"></i>
       </button>
@@ -34,16 +40,16 @@
         <a href="loginfo.xhtml?type=pass">Modify Password</a>
       </div>
       <div>
-        <button class="dropdown-btn">Users
+        <button class="dropdown-btn" style="display: #{loginBean.admin ? 'block' : 'none'}">Users
           <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-container">
           <a href="search.xhtml?list=user">Users List</a>
           <a href="manageUser.xhtml">New User</a>
         </div>
-        <a href="?page=home">Semesters</a>
+<!--        <a href="?page=home">Semesters</a>
         <a href="?page=home">History</a>
-        <a href="?page=home">Backup</a>
-        <a href="?page=home">Logs</a>
+        <button class="dropdown-btn" >Backup</button>
+        <a href="?page=home">Logs</a>-->
       </div>
     </div>

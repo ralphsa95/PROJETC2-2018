@@ -141,7 +141,7 @@
               </h:selectOneMenu> &nbsp;   
               <h:commandButton actionListener="#{studentCourseBean.search}"  value="Search" action="search.xhtml">
                 <f:param name="list" value="mystudents" />
-                <f:param name="grades" value="yes" />
+                <f:param name="grades" value="#{param['grades']}" />
               </h:commandButton>
             </div>  
           </h:form>
@@ -166,13 +166,52 @@
                 </h:column>
               </c:if>
             </h:dataTable>
-            <h:commandButton actionListener="#{studentCourseBean.save}"  value="Save" action="search.xhtml">
+            <h:commandButton actionListener="#{studentCourseBean.save}"  value="Save" action="search.xhtml" rendered="#{param['grades'] eq 'yes'}">
               <f:param name="list" value="mystudents" />
               <f:param name="grades" value="yes" />
             </h:commandButton>
             <h:message for="save"/>
           </h:form>
-
+        </c:if>
+        <c:if test="#{param['list'] eq 'mycourses'}">
+          <h:form>
+            <h:dataTable value="#{studentCourseBean.getStudentCourses(param['all'])}" var="item" cellspacing="0" style="margin-top: 20px;">
+              <h:column>
+                <f:facet name="header">Code</f:facet>
+                <h:outputText value="#{item.course}" />
+              </h:column>
+              <h:column>
+                <f:facet name="header">Course</f:facet>
+                <h:outputText value="#{item.courseName}" />
+              </h:column> 
+              <h:column>
+                <f:facet name="header">Credits</f:facet>
+                <h:outputText value="#{item.credits}" />
+              </h:column>
+              <h:column>
+                <f:facet name="header">Semester</f:facet>
+                <h:outputText value="#{item.cur_semester}" />
+              </h:column>
+              <h:column>
+                <f:facet name="header">Year</f:facet>
+                <h:outputText value="#{item.cur_year}" />
+              </h:column>
+              <c:if test="#{param['grades'] eq 'yes'}">
+                <h:column>
+                  <f:facet name="header">Grade 1</f:facet>
+                  <h:outputText value="#{item.grade1}" />
+                </h:column>
+                <h:column>
+                  <f:facet name="header">Grade 2</f:facet>
+                  <h:outputText value="#{item.grade2}" />
+                </h:column>  
+                <h:column>
+                  <f:facet name="header">Final Grade</f:facet>
+                  <h:outputText value="#{item.finalGrade}" />
+                </h:column>                
+              </c:if>              
+            </h:dataTable>
+          </h:form>
         </c:if>
       </f:view>
     </div>
