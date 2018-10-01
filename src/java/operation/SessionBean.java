@@ -20,6 +20,7 @@ import objects.Degree;
 import objects.DegreeCourse;
 import objects.Department;
 import objects.Role;
+import objects.StudentCourse;
 import objects.User;
 import session.SessionUtil;
 
@@ -29,13 +30,14 @@ import session.SessionUtil;
  */
 public class SessionBean {
 
+    Connection connection = DBUtil.getConnection();
+
     /**
      * *******************************DEPARTMENTS************************************
      */
     public ArrayList<Department> getDepartment(String filter) {
         ArrayList<Department> list = new ArrayList();
         try {
-            Connection connection = DBUtil.getConnection();
 
             String sql = "SELECT d.code, d.name name, d.head, concat(u.name, ' ', u.family) headname, d.activated FROM "
                     + " department d, user u where u.code = d.head"
@@ -66,7 +68,6 @@ public class SessionBean {
     }
 
     public boolean manageDepartment(Department d, String action) throws SQLException {
-        Connection conn = DBUtil.getConnection();
         String sql = "";
         if ("U".equals(action)) {
             sql = "UPDATE department SET name=?, head= ?, updated_date = current_date, updated_by =? WHERE code=?";
@@ -74,7 +75,7 @@ public class SessionBean {
             sql = "Insert into department (name, head, created_date, created_by, code) values(?,?,current_date,?,?)";
         }
 
-        PreparedStatement stmt = conn.prepareStatement(sql);
+        PreparedStatement stmt = connection.prepareStatement(sql);
         stmt.setString(1, d.getName());
         stmt.setString(2, d.getHead());
         stmt.setString(3, SessionUtil.getUserCode());
@@ -89,18 +90,16 @@ public class SessionBean {
     public ArrayList<Degree> getDegree(String filter, String department) {
         ArrayList<Degree> list = new ArrayList();
         try {
-            Connection connection = DBUtil.getConnection();
-
             String sql = "SELECT d.code, d.name name, de.code department ,de.name departmentName, d.credits, d.price,"
                     + "d.activated  "
                     + " FROM degree d, department de "
                     + " where de.code = d.department"
-                    + " and (? or (not ? and de.head = ?)) "
+                    + " and (not ? or (? and de.head = ?)) "
                     + " and (d.code = ? or ? is  null)"
                     + " and (d.department = ? or ? is  null)";
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setBoolean(1, SessionUtil.isAdmin());
-            ps.setBoolean(2, SessionUtil.isAdmin());
+            ps.setBoolean(1, SessionUtil.isHead());
+            ps.setBoolean(2, SessionUtil.isHead());
             ps.setString(3, SessionUtil.getUserCode());
             ps.setString(4, filter);
             ps.setString(5, filter);
@@ -125,7 +124,6 @@ public class SessionBean {
     public ArrayList<DegreeCourse> getDegreeCourse(String degree) {
         ArrayList<DegreeCourse> list = new ArrayList();
         try {
-            Connection connection = DBUtil.getConnection();
             String sql = "Select DC.degree, DC.course, DC.semester, C.credits, D.name, C.name"
                     + "     From degree d, course c, degreecourse dc"
                     + "    where dc.degree = d.code"
@@ -149,7 +147,6 @@ public class SessionBean {
     public ArrayList<Course> getCoursesForDegee(String degree) {
         ArrayList<Course> list = new ArrayList();
         try {
-            Connection connection = DBUtil.getConnection();
             String sql = "Select C.code, C.name"
                     + "     From course c"
                     + "    where activated"
@@ -179,8 +176,6 @@ public class SessionBean {
                     + "(?, ?, ?)";
         }
         try {
-
-            Connection connection = DBUtil.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, dc.getDegree());
             ps.setString(2, dc.getCourse());
@@ -201,8 +196,6 @@ public class SessionBean {
     public ArrayList<User> getUsers(String role, boolean all, String code, String name) {
         ArrayList<User> list = new ArrayList();
         try {
-            Connection connection = DBUtil.getConnection();
-
             String sql = "SELECT u.code, u.role, r.name, u.username, u.pass, u.activated,"
                     + " u.name, u.family, u.email, u.phone, u.adr"
                     + " FROM "
@@ -238,7 +231,6 @@ public class SessionBean {
     }
 
     public void manageUser(User d, String action) throws SQLException {
-        Connection conn = DBUtil.getConnection();
         boolean create = false;
         String sql = "";
         if ("U".equals(action)) {
@@ -249,7 +241,7 @@ public class SessionBean {
                     + " values(?,?,?,?,?,now(),?,1,?,?,?,?)";
         }
 
-        PreparedStatement stmt = conn.prepareStatement(sql);
+        PreparedStatement stmt = connection.prepareStatement(sql);
         stmt.setString(1, d.getName());
         stmt.setString(2, d.getFamily());
         stmt.setInt(3, d.getPhone());
@@ -271,8 +263,6 @@ public class SessionBean {
     public ArrayList<Role> getRole() {
         ArrayList<Role> list = new ArrayList();
         try {
-            Connection connection = DBUtil.getConnection();
-
             String sql = "SELECT code, name from role";
             PreparedStatement ps = connection.prepareStatement(sql);
 
@@ -289,11 +279,123 @@ public class SessionBean {
     }
 
     public void resetLogInfo(String type, String val) throws SQLException {
-        Connection conn = DBUtil.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("Update user set " + type + " = ? where code = ?");
+        PreparedStatement stmt = connection.prepareStatement("Update user set " + type + " = ? where code = ?");
         stmt.setString(1, val);
         stmt.setString(2, SessionUtil.getUserCode());
         stmt.executeUpdate();
+    }
+
+    /**
+     * *******************************COURSES***********************************
+     */
+    public ArrayList<StudentCourse> getRegisterCourses(String degree) {
+        ArrayList<StudentCourse> courses = new ArrayList<StudentCourse>();
+        try {
+            String sql = "select code,name,credits, dc.semester"
+                    + "  from course c, degreecourse dc  "
+                    + " where activated "
+                    + "   and c.code = dc.course "
+                    + "   and dc.degree=?"
+                    + "    and code in(\n"
+                    + "    select cs.course from coursestudent cs\n"
+                    + "     where finalgrade < 10 \n"
+                    + "       and student = ? \n"
+                    + "       and degree = ?\n"
+                    + "       and mod(dc.semester,2) = ?\n"
+                    + "    union \n"
+                    + "	   select course \n"
+                    + "      from degreecourse \n"
+                    + "     where degree = ?\n"
+                    + "       and mod(semester, 2) = ?\n"
+                    + "       and semester = ifnull((select ifnull(max(semester)+1,1)\n"
+                    + "                   	            from coursestudent\n"
+                    + "  					           where student = ?"
+                    + "                                                      and degree = ?),1) \n"
+                    + "					)";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, degree);
+            ps.setString(2, SessionUtil.getUserCode());
+            ps.setString(3, degree);
+            ps.setString(4, SessionUtil.getSemester());
+            ps.setString(5, degree);
+            ps.setString(6, SessionUtil.getSemester());
+            ps.setString(7, SessionUtil.getUserCode());
+            ps.setString(8, degree);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                courses.add(new StudentCourse(rs.getString(1), rs.getString(2), rs.getInt(3), rs.getInt(4)));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(SessionBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return courses;
+    }
+
+    public void register(String course, int semester, String degree) throws SQLException {
+        String sql = "Insert Into coursestudent (student, course, semester, cur_year, cur_semester, degree)"
+                + " values(?,?,?,?,?,?)";
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setString(1, SessionUtil.getUserCode());
+        stmt.setString(2, course);
+        stmt.setInt(3, semester);
+        stmt.setString(4, SessionUtil.getYear());
+        stmt.setString(5, SessionUtil.getSemester());
+        stmt.setString(6, degree);
+        stmt.executeUpdate();
+    }
+
+    public ArrayList<Course> getTeacherCourse() {
+        ArrayList<Course> courses = new ArrayList<Course>();
+        String sql = "Select code, name from course where teacher = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, SessionUtil.getUserCode());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                courses.add(new Course(rs.getString(1), rs.getString(2)));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(SessionBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return courses;
+    }
+
+    public ArrayList<StudentCourse> getStudentCourse(String course) {
+        ArrayList<StudentCourse> list = new ArrayList<StudentCourse>();
+        String sql = "Select student, concat(name, ' ', family), grade1, grade2, finalgrade from coursestudent C, user U"
+                + "    where course = ?"
+                + "      and student = u.code"
+                + "      and cur_semester = ?"
+                + "      and cur_year = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, course);
+            ps.setString(2, SessionUtil.getSemester());
+            ps.setString(3, SessionUtil.getYear());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new StudentCourse(rs.getString(1), rs.getString(2), rs.getDouble(3), rs.getDouble(4), rs.getDouble(5), course));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(SessionBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
+    public void modifyGrades(List<StudentCourse> list) throws SQLException {
+        String sql = "Update coursestudent set grade1 = ?, grade2 = ?, finalgrade = ?"
+                + " where student = ? and course = ? and cur_semester = ? and cur_year = ?";
+        for (StudentCourse sc : list) {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setDouble(1, sc.getGrade1());
+            stmt.setDouble(2, sc.getGrade2());
+            stmt.setDouble(3, sc.getFinalGrade());
+            stmt.setString(4, sc.getStudent());
+            stmt.setString(5, sc.getCourse());
+            stmt.setString(6, SessionUtil.getSemester());
+            stmt.setString(7, SessionUtil.getYear());
+            stmt.executeUpdate();
+        }
     }
 
     /**
@@ -301,8 +403,7 @@ public class SessionBean {
      */
     public void delete(String table, String code) {
         try {
-            Connection conn = DBUtil.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("Delete from " + table + " where code = ?");
+            PreparedStatement stmt = connection.prepareStatement("Delete from " + table + " where code = ?");
             stmt.setString(1, code);
             stmt.executeUpdate();
         } catch (SQLException ex) {
@@ -312,8 +413,7 @@ public class SessionBean {
 
     public boolean actdeac(String table, String code, boolean action) {
         try {
-            Connection conn = DBUtil.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("Update " + table + " set activated = ? where code = ?");
+            PreparedStatement stmt = connection.prepareStatement("Update " + table + " set activated = ? where code = ?");
             stmt.setBoolean(1, action);
             stmt.setString(2, code);
             return stmt.executeUpdate() > 0;
