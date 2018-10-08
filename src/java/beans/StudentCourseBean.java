@@ -65,7 +65,7 @@ public class StudentCourseBean {
     }
 
     public ArrayList<StudentCourse> getStudentCourses(String all){
-      return session.getStudentCourse(Boolean.parseBoolean(all));
+      return session.getStudentCourses(Boolean.parseBoolean(all));
     }
     /**
      * Getters and setters*
