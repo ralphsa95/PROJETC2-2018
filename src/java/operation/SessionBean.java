@@ -15,13 +15,7 @@ import java.sql.Statement;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import objects.Course;
-import objects.Degree;
-import objects.DegreeCourse;
-import objects.Department;
-import objects.Role;
-import objects.StudentCourse;
-import objects.User;
+import objects.*;
 import session.SessionUtil;
 
 /**
@@ -298,7 +292,7 @@ public class SessionBean {
                     + "   and dc.degree=?"
                     + "    and code in(\n"
                     + "    select cs.course from coursestudent cs\n"
-                    + "     where finalgrade < 10 \n"
+                    + "     where finalgrade between 0.25 and 10 \n"
                     + "       and student = ? \n"
                     + "       and degree = ?\n"
                     + "       and mod(dc.semester,2) = ?\n"
@@ -396,6 +390,82 @@ public class SessionBean {
             stmt.setString(7, SessionUtil.getYear());
             stmt.executeUpdate();
         }
+    }
+
+    public ArrayList<StudentCourse> getStudentCourses(boolean all) {
+        ArrayList<StudentCourse> list = new ArrayList<StudentCourse>();
+        String sql = "select code, name, credits, cur_semester, cur_year, grade1, grade2, finalgrade \n"
+                + "  from coursestudent, course \n"
+                + " where code = course \n"
+                + "   and student = ? \n"
+                + "   and (cur_semester = ? or ? )\n"
+                + "   and (cur_year = ? or ? )\n"
+                + "  order by cur_year, cur_semester";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, SessionUtil.getUserCode());
+            ps.setString(2, SessionUtil.getSemester());
+            ps.setBoolean(3, all);
+            ps.setString(4, SessionUtil.getYear());
+            ps.setBoolean(5, all);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new StudentCourse(rs.getString(1), rs.getString(2), rs.getInt(3), rs.getInt(4), rs.getInt(5), rs.getDouble(6), rs.getDouble(7), rs.getDouble(8)));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(SessionBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
+    public Map<String, String> getCourses() {
+        Map<String, String> courses = new LinkedHashMap<>();
+        String sql = "select code, name from course where activated";
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                courses.put(rs.getString(1), rs.getString(2));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(SessionBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return courses;
+    }
+
+    /**
+     * ***************************SCHEDULE**************************************
+     */
+    public void addToSchedule(Schedule s) {
+        try {
+            String sql = "Insert into schedule (course, day, period, semester, year, created_date, created_by) values "
+                    + " (?,?,?,?,?,now(),?)";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, s.getCourse());
+            ps.setString(2, s.getDay());
+            ps.setInt(3, s.getPeriod());
+            ps.setString(4, SessionUtil.getSemester());
+            ps.setString(5, SessionUtil.getYear());
+            ps.setString(6, SessionUtil.getUserCode());
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(SessionBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void deleteFromSchedule(String day, String course, int period){
+           try {
+            String sql = "Delete from schedule where day = ? and  course = ? and period = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, day);
+            ps.setString(2, course);
+            ps.setInt(3, period);
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(SessionBean.class.getName()).log(Level.SEVERE, null, ex);
+        }   
     }
 
     /**
