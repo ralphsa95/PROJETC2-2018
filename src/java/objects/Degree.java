@@ -13,16 +13,14 @@ public class Degree {
 
     private String code;
     private String name;
-    private int credits;
     private double price;
     private String department;
     private String departmentName;
     private boolean active;
 
-    public Degree(String code, String name, String department, String depName, int credits, double price , Boolean active) {
+    public Degree(String code, String name, String department, String depName,  double price , Boolean active) {
         this.code = code;
         this.name = name;
-        this.credits = credits;
         this.price = price;
         this.department = department;
         this.departmentName = depName;
@@ -45,13 +43,6 @@ public class Degree {
         this.name = name;
     }
 
-    public int getCredits() {
-        return credits;
-    }
-
-    public void setCredits(int credits) {
-        this.credits = credits;
-    }
 
     public double getPrice() {
         return price;
