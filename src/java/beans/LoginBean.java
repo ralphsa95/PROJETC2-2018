@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import objects.Login;
-import org.apache.catalina.manager.util.SessionUtils;
+import operation.SessionBean;
 import session.SessionUtil;
 
 /**
@@ -34,6 +34,7 @@ public class LoginBean {
     private String user;
     private String name;
 
+    SessionBean sessionBean = new SessionBean();
     public LoginBean() {
     }
 
@@ -65,7 +66,7 @@ public class LoginBean {
         this.name = name;
     }
 
-    public String validateUsernamePassword() {
+    public String validateUsernamePassword() throws SQLException {
         boolean valid = Login.validate(user, pwd);
         if (valid) {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -74,6 +75,7 @@ public class LoginBean {
             try {
                 FacesContext.getCurrentInstance().getExternalContext()
                         .redirect(contextPath + "/faces/home.xhtml");
+            sessionBean.insertUserLog(user,"I");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -104,8 +106,9 @@ public class LoginBean {
         return SessionUtil.getSemester();
     }
     
-    public String logout() {
+    public String logout() throws SQLException {
         HttpSession session = SessionUtil.getSession();
+        sessionBean.insertUserLog(SessionUtil.getUserName(),"U");
         session.invalidate();
         return "login";
     }
