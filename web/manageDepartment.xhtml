@@ -10,6 +10,10 @@
       <f:viewAction action="#{departmentManagedBean.onload}" />  
     </f:metadata>
   </ui:define>
+  <h:head>
+    <title>UNI App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+  </h:head>
   <ui:include src="style.html" />
   <h:body>
     <f:view>
@@ -21,43 +25,43 @@
               <h:commandLink action="#{loginBean.logout}" value="Logout" class="logout" ></h:commandLink>
             </h:form>
           </span>
-          Welcome #{loginBean.name}
+          <span class="welcome">Welcome #{loginBean.name}</span>
           <div style="font-size: 12px; margin-top: 7px; color:#b30000">Year #{loginBean.year} &nbsp;Semester #{loginBean.semester}</div>
         </div>
         <div style="text-align: center;">
           <h:form>
             <table border="0" cellspacing="20" width="40%" style="display: inline-block; margin-top: 80px">
-              <tbody>
-                <tr>
-                  <td>Code</td><td><h:inputText value="#{departmentManagedBean.code}" required="true" readonly="#{departmentManagedBean.readonly}"  /></td>
-                  <td>Name</td><td><h:inputText value="#{departmentManagedBean.name}" required="true" /></td>
-                </tr>
-                <tr>
-                  <td>Head</td>
-                  <td>
-                    <h:selectOneMenu value="#{departmentManagedBean.head}" required="true" style="width:100%">
-                      <f:selectItems value="#{departmentManagedBean.heads}"/>
-                    </h:selectOneMenu>
-                  </td>
-                  <td colspan="2">
-                    <h:commandButton action="#{departmentManagedBean.save}"
-                                     value="Save"></h:commandButton>
-                  </td>
-                </tr>
-              </tbody>
+              <tr>
+                <td>Code</td><td><h:inputText value="#{departmentManagedBean.code}" required="true" readonly="#{departmentManagedBean.readonly}"  /></td>
+                <td>Name</td><td><h:inputText value="#{departmentManagedBean.name}" required="true" /></td>
+              </tr>
+              <tr>
+                <td>Head</td>
+                <td>
+                  <h:selectOneMenu value="#{departmentManagedBean.head}" required="true" style="width:100%">
+                    <f:selectItems value="#{departmentManagedBean.heads}"/>
+                  </h:selectOneMenu>
+                </td>
+                <td colspan="2">
+                  <h:commandButton action="#{departmentManagedBean.save}"
+                                   value="Save"></h:commandButton>
+                </td>
+              </tr>
             </table>
             <div class="actdeactdel">
               <h:commandLink  rendered="#{departmentManagedBean.readonly}"
-                              value="#{departmentManagedBean.active ? 'Deactivate' : 'Activate'}" action="#{commonBean.actdeact('department', departmentManagedBean.code, !departmentManagedBean.active)}" >
+                              value="#{departmentManagedBean.active ? 'Deactivate' : 'Activate'}" action="#{commonBean.actdeactCommon('department', departmentManagedBean.code, !departmentManagedBean.active)}" >
               </h:commandLink> 
               &nbsp;
               <h:commandLink onclick="if (!confirm('Are you sure you want to delete this department ?'))
                           return false" rendered="#{departmentManagedBean.readonly}"
-                             value="Delete" action="#{commonBean.delete('department', departmentManagedBean.code)}" >
+                             value="Delete" action="#{commonBean.deleteCommon('department', departmentManagedBean.code)}" >
 
               </h:commandLink> 
             </div>
-            <h:message for="saveDep" /> 
+            <div class="message #{departmentManagedBean.styleClass}">
+              <h:outputText value="#{departmentManagedBean.message}"  />
+            </div>
           </h:form>
         </div>
       </div>
