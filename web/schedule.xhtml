@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+  <ui:define name="header">
+    <f:metadata>
+      <f:viewAction action="#{manageScheduleBean.onload}" />  
+    </f:metadata>
+  </ui:define>
+  <h:head>
+    <title>UNI App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+  </h:head>
+  <style>
+    tr, th, td {border: 1px solid #818181;}
+    table{box-shadow: 5px 5px 2px 0px rgba(226,231,233,0.75);}
+  </style>
+  <ui:include src="style.html" />
+  <h:body>
+    <f:view>
+      <ui:include src="side.html" />
+      <div class="main">
+        <div class="header">
+          <span style="float:right;">
+            <h:form>
+              <h:commandLink action="#{loginBean.logout}" value="Logout" class="logout" ></h:commandLink>
+            </h:form>
+          </span>
+          <span class="welcome">Welcome #{loginBean.name}</span>
+          <div style="font-size: 12px; margin-top: 7px; color:#b30000">Year #{loginBean.year} &nbsp;Semester #{loginBean.semester}</div>
+        </div>
+        <div style="text-align: center; padding-top: 20px;">
+          <c:if test="#{loginBean.admin}">
+            <h:form>
+              Course &nbsp;
+              <h:selectOneMenu value="#{manageScheduleBean.course}" required="true" >
+                <f:selectItems value="#{manageScheduleBean.courses}"/>
+              </h:selectOneMenu>&nbsp;&nbsp;
+              <h:commandButton value="Search" action="#{manageScheduleBean.search}"/>
+              <hr/>
+              Day &nbsp;
+              <h:selectOneMenu value="#{manageScheduleBean.day}" required="true" >
+                <f:selectItems value="#{manageScheduleBean.daysMap}"/>
+              </h:selectOneMenu>
+              &nbsp; Period
+              <h:selectOneMenu value="#{manageScheduleBean.period}" required="true" >
+                <f:selectItems value="#{manageScheduleBean.periods}"/>
+              </h:selectOneMenu>
+              &nbsp; &nbsp;
+              <h:commandButton value="Add" action="#{manageScheduleBean.add}"/>
+            </h:form>
+          </c:if>
+          <h:panelGrid columns="#{manageScheduleBean.columnsNumber}" cellpadding="0" cellspacing="0"  style="border-collapse: collapse;display: inline-block">
+
+            <h:panelGroup styleClass="schedule-th-period">Period</h:panelGroup>
+            <c:forEach items="#{manageScheduleBean.daysList}" var="weekDay">
+              <h:panelGroup styleClass="schedule-th">#{weekDay}</h:panelGroup>
+            </c:forEach>
+
+            <c:forEach items="#{manageScheduleBean.all}" var="period" varStatus="list">
+              <c:forEach items="#{period}" var="day" varStatus="periods">
+                <h:panelGroup>
+                  <div></div>
+                  <c:if test="#{periods.index == 0}"> #{list.index +1}</c:if>
+                  <c:forEach items="#{day}" var="course">
+                    <div style="margin:10px 2px;">#{course.getName()}</div>
+                    <c:if test="#{loginBean.admin}">
+                      <h:form>
+                        <h:commandLink class="fa fa-remove" title="Delete"  onclick="if (!confirm('Are you sure you want to delete this course ?')) 
+                                    return false" action="#{manageScheduleBean.delete(course.getCode(),course.getDay(),course.getPeriod())}" style="font-size:14px;color: #b30000;"/>
+                      </h:form>
+                    </c:if>
+                  </c:forEach>
+                </h:panelGroup> 
+              </c:forEach>
+            </c:forEach>
+
+          </h:panelGrid>
+          <div class="message #{manageScheduleBean.styleClass}">
+            <h:outputText value="#{manageScheduleBean.message}"  />
+          </div>
+        </div>
+      </div>
+    </f:view>
+  </h:body>
+  <ui:include src="after.html" />
+</html>
+
