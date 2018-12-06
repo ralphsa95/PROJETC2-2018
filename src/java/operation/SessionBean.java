@@ -438,34 +438,63 @@ public class SessionBean {
     /**
      * ***************************SCHEDULE**************************************
      */
-    public void addToSchedule(Schedule s) {
+    public ArrayList<Course> getScheduleCourses(String course) {
+        ArrayList<Course> courses = new ArrayList<Course>();
+        String sql = "";
+        if (SessionUtil.isStudent()) {
+            sql = "select c.code, c.name, s.day, s.period from course c, coursestudent cs, schedule s where "
+                    + " c.code = cs.course and s.course = cs.course and cur_year = ? and cur_semester = ? and cs.student = ? order by s.period, s.day";
+        } else if (SessionUtil.isTeacher()) {
+            sql = "select c.code, c.name, s.day, s.period from course c, schedule s"
+                    + " where s.course = code and c.teacher = ? order by s.period, s.day";
+        } else if (SessionUtil.isAdmin()) {
+            sql = "select c.code, c.name, s.day, s.period from course c, schedule s"
+                    + " where s.course = code and c.code = ? order by s.period, s.day";
+        }
         try {
-            String sql = "Insert into schedule (course, day, period, semester, year, created_date, created_by) values "
-                    + " (?,?,?,?,?,now(),?)";
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setString(1, s.getCourse());
-            ps.setString(2, s.getDay());
-            ps.setInt(3, s.getPeriod());
-            ps.setString(4, SessionUtil.getSemester());
-            ps.setString(5, SessionUtil.getYear());
-            ps.setString(6, SessionUtil.getUserCode());
-            ps.executeUpdate();
+            if (SessionUtil.isAdmin()) {
+                ps.setString(1, course);
+            } else {
+                ps.setString(1, SessionUtil.getUserCode());
+                if (SessionUtil.isStudent()) {
+                    ps.setString(2, SessionUtil.getYear());
+                    ps.setString(3, SessionUtil.getSemester());
+                }
+            }
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                courses.add(new Course(rs.getString(1), rs.getString(2), rs.getInt(3), rs.getInt(4)));
+            }
         } catch (SQLException ex) {
             Logger.getLogger(SessionBean.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return courses;
     }
-    
-    public void deleteFromSchedule(String day, String course, int period){
-           try {
-            String sql = "Delete from schedule where day = ? and  course = ? and period = ?";
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setString(1, day);
-            ps.setString(2, course);
-            ps.setInt(3, period);
-            ps.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(SessionBean.class.getName()).log(Level.SEVERE, null, ex);
-        }   
+
+    public void addToSchedule(Schedule s) throws SQLException {
+
+        String sql = "Insert into schedule (course, day, period, semester, year, created_date, created_by) values "
+                + " (?,?,?,?,?,now(),?)";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1, s.getCourse());
+        ps.setString(2, s.getDay());
+        ps.setInt(3, s.getPeriod());
+        ps.setString(4, SessionUtil.getSemester());
+        ps.setString(5, SessionUtil.getYear());
+        ps.setString(6, SessionUtil.getUserCode());
+        ps.executeUpdate();
+
+    }
+
+    public void deleteFromSchedule(int day, String course, int period) throws SQLException {
+        String sql = "Delete from schedule where day = ? and  course = ? and period = ?";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1, day);
+        ps.setString(2, course);
+        ps.setInt(3, period);
+        ps.executeUpdate();
+
     }
 
     /**
