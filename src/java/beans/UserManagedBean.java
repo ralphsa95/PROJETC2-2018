@@ -50,6 +50,8 @@ public class UserManagedBean {
     private String roleFilter;
     private String nameFilter;
     private boolean readOnly;
+    private String message;
+    private String styleClass;
 
     private String type;
 
@@ -61,24 +63,17 @@ public class UserManagedBean {
     List<User> userslist = new ArrayList<User>();
 
     public void save() {
-        String message = "";
-        FacesMessage.Severity ms = null;
         try {
             session.manageUser(new User(code, role, null, null, null, true, name, family, mail, phone, adr), action);
-
             message = "User saved successfuly";
-            ms = FacesMessage.SEVERITY_INFO;
+            styleClass = "success";
 
         } catch (SQLException ex) {
             message = "Error: " + ex.toString();
-            ms = FacesMessage.SEVERITY_ERROR;
-            //Logger.getLogger(DepartmentManagedBean.class.getName()).log(Level.SEVERE, null, ex);
+            styleClass = "error";
+            Logger.getLogger(DepartmentManagedBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-        FacesContext.getCurrentInstance().addMessage(
-                null,
-                new FacesMessage(ms,
-                        message,
-                        message));
+
     }
 
     public Map<String, String> getRoles() {
@@ -109,6 +104,9 @@ public class UserManagedBean {
     }
 
     public void onload() {
+        message = "";
+        styleClass = "";
+
         if (codeFilter != null) {
             User d = session.getUsers(null, true, codeFilter, null).get(0);
             this.code = codeFilter;
@@ -288,23 +286,15 @@ public class UserManagedBean {
         this.roleName = roleName;
     }
 
-    
-    
     public String resetLogInfo() {
         User currentUser = session.getUsers(null, true, SessionUtil.getUserCode(), null).get(0);
         String current = type.equals("username") ? currentUser.getUsername() : currentUser.getPassword();
         if (!current.equals(old)) {
-            FacesContext.getCurrentInstance().addMessage(
-                    null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "Enetered " + type + " different from current",
-                            "Enetered " + type + " different from current"));
+            message = "Enetered " + type + " different from current";
+            styleClass = "warning";
         } else if (!new1.equals(new2)) {
-            FacesContext.getCurrentInstance().addMessage(
-                    null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "Rentered " + type + " is wrong",
-                            "Rentered " + type + " is wrong"));
+            message = "Rentered " + type + " is wrong";
+            styleClass = "warning";
         } else {
             try {
                 session.resetLogInfo(type, new1);
@@ -312,13 +302,26 @@ public class UserManagedBean {
                 session.invalidate();
                 return "login";
             } catch (SQLException ex) {
-                FacesContext.getCurrentInstance().addMessage(
-                        null,
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                "Error " + ex.toString(),
-                                "Error " + ex.toString()));
+                message = "Error " + ex.toString();
+                styleClass = "error";
             }
         }
         return null;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getStyleClass() {
+        return styleClass;
+    }
+
+    public void setStyleClass(String styleClass) {
+        this.styleClass = styleClass;
     }
 }
