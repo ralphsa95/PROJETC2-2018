@@ -13,16 +13,17 @@
       </button>
       <div class="dropdown-container">
         <a href="search.xhtml?list=degree">Degrees List</a>
-        <a href="?manageDegree" style="display: #{loginBean.admin || loginBean.head ? 'block' : 'none'}">New Degree</a>
+        <a href="manageDegree.xhtml" style="display: #{loginBean.admin || loginBean.head ? 'block' : 'none'}">New Degree</a>
       </div>
       <button class="dropdown-btn" style="display: #{loginBean.admin || loginBean.head ? 'block' : 'none'}">Courses
         <i class="fa fa-caret-down"></i>
       </button>
       <div class="dropdown-container">
-        <a href="?page=coursemgt">New Course</a>
+        <a href="search.xhtml?list=course">Courses List</a>
+        <a href="manageCourse.xhtml">New Course</a>
       </div>
-      <a href="registration.xhtml" style="display: #{loginBean.student ? 'block' : 'none'}">Courses Choice</a>
-      <button class="dropdown-btn" style="display: #{loginBean.student ? 'block' : 'none'}">Check Grades
+      <a href="registration.xhtml" style="display: #{loginBean.student || loginBean.teacher ? 'block' : 'none'}">Courses Choice</a>
+      <button class="dropdown-btn" style="display: #{loginBean.student || loginBean.teacher ? 'block' : 'none'}">Check Grades
         <i class="fa fa-caret-down"></i>
       </button>
       <div class="dropdown-container">
@@ -47,9 +48,10 @@
           <a href="search.xhtml?list=user">Users List</a>
           <a href="manageUser.xhtml">New User</a>
         </div>
-<!--        <a href="?page=home">Semesters</a>
-        <a href="?page=home">History</a>
-        <button class="dropdown-btn" >Backup</button>
-        <a href="?page=home">Logs</a>-->
       </div>
+      <a href="schedule.xhtml" style="display: #{loginBean.head  ? 'none' : 'block'}">Schedule</a>
+      <a href="manageGlobal.xhtml" style="display: #{loginBean.admin ? 'block' : 'none'}">Global</a>
+      <a href="search.xhtml?list=userlogs" style="display: #{loginBean.admin ? 'block' : 'none'}">User Logs</a>
+      <a href="history.xhtml" style="display: #{loginBean.admin ? 'block' : 'none'}">History</a>
+
     </div>
