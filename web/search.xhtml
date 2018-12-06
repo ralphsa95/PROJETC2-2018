@@ -8,11 +8,21 @@
   <ui:define name="header">
     <f:metadata>
       <f:viewParam name="dep" value="#{degreeManagedBean.depFilter}" />
+      <c:if test="#{param['list'] eq 'course'}">
+        <f:viewAction action="#{courseManagedBean.onload}" />  
+      </c:if>
+      <c:if test="#{param['list'] eq 'user'}">
+        <f:viewAction action="#{userManagedBean.onload}" />  
+      </c:if>
     </f:metadata>
   </ui:define>
+  <h:head>
+    <title>UNI App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+  </h:head>
   <style>
-    tr,th,td{border: solid 1px}
-    table{width: 70%; margin: auto;}
+    tr, th, td {border: 1px solid #818181;}
+    table{width: 70%; margin: auto;box-shadow: 5px 5px 2px 0px rgba(226,231,233,0.75);}
     form,h1{text-align: center}
   </style>
   <ui:include src="style.html" />
@@ -25,7 +35,7 @@
             <h:commandLink action="#{loginBean.logout}" value="Logout" class="logout" ></h:commandLink>
           </h:form>
         </span>
-        Welcome #{loginBean.name}
+        <span class="welcome">Welcome #{loginBean.name}</span>
         <div style="font-size: 12px; margin-top: 7px; color:#b30000">Year #{loginBean.year} &nbsp;Semester #{loginBean.semester}</div>
       </div>
       <f:view>
@@ -48,9 +58,11 @@
               <h:outputText value="#{item.headName}"></h:outputText>
             </h:column>
             <h:column>
-              <h:link value="Degrees" outcome="search.xhtml?list=degree" >
-                <f:param name="dep" value="#{item.code}"/>
-              </h:link>
+              <span class="view">
+                <h:link title="Degrees" outcome="search.xhtml?list=degree" class="fa fa-eye">
+                  <f:param name="dep" value="#{item.code}"/>
+                </h:link>
+              </span>
             </h:column>
           </h:dataTable>
         </c:if>
@@ -68,21 +80,58 @@
               <h:column>
                 <f:facet name="header">Name</f:facet>
                 <h:outputText value="#{degree.name}"></h:outputText>
-              </h:column>                        
-              <h:column>
-                <f:facet name="header">Credits</f:facet>
-                <h:outputText value="#{degree.credits}"></h:outputText>
-              </h:column>
+              </h:column> 
               <h:column>
                 <f:facet name="header">Cr.Price</f:facet>
                 <h:outputText value="#{degree.price}"></h:outputText>
               </h:column>              
               <h:column>
-                <h:link value="Courses" outcome="manageDegreeCourse.xhtml" >
-                  <f:param name="degree" value="#{degree.code}"/>
-                </h:link>
+                <span class="view">
+                  <h:link title="Courses" outcome="manageDegreeCourse.xhtml" class="fa fa-eye">
+                    <f:param name="degree" value="#{degree.code}"/>
+                  </h:link>
+                </span>
               </h:column>
             </h:dataTable>
+          </h:form>
+        </c:if>
+        <c:if test="#{param['list'] eq 'course'}">
+          <h:form>
+            <h1>Courses</h1>
+            <div style="text-align: left; margin-bottom: 15px;">
+              Code
+              &nbsp;
+              <h:inputText value="#{courseManagedBean.codeFilter}"   />
+              &nbsp;&nbsp;&nbsp;
+              Name
+              &nbsp;
+              <h:inputText value="#{courseManagedBean.nameFilter}"   />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <h:commandButton value="Search" actionListener="#{courseManagedBean.search}" action="search.xhtml">
+                <f:param name="list" value="course" />
+              </h:commandButton>
+            </div>
+            <h:dataTable value="#{courseManagedBean.coursesList}" var="course" cellspacing="0"
+                         style="border-collapse: collapse;width:100% !important;">
+              <h:column>
+                <f:facet name="header">Code</f:facet>
+                <h:link value="#{course.code}" outcome="manageCourse" includeViewParams="true">
+                  <f:param name="code" value="#{course.code}"/>
+                </h:link>
+              </h:column>
+              <h:column>
+                <f:facet name="header">Name</f:facet>
+                <h:outputText value="#{course.name}"></h:outputText>
+              </h:column>
+              <h:column>
+                <f:facet name="header">Credits</f:facet>
+                <h:outputText value="#{course.credits}"></h:outputText>
+              </h:column>
+              <h:column>
+                <f:facet name="header">Teacher</f:facet>
+                <h:outputText value="#{course.teacherName}"></h:outputText>
+              </h:column>
+            </h:dataTable>  
           </h:form>
         </c:if>
         <c:if test="#{param['list'] eq 'user'}">
@@ -101,7 +150,7 @@
               &nbsp;
               <h:inputText value="#{userManagedBean.nameFilter}"   />
               &nbsp;&nbsp;
-              <h:commandButton value="search" actionListener="#{userManagedBean.search}" action="search.xhtml">
+              <h:commandButton value="Search" actionListener="#{userManagedBean.search}" action="search.xhtml">
                 <f:param name="list" value="user" />
               </h:commandButton>
             </div>
@@ -212,6 +261,22 @@
               </c:if>              
             </h:dataTable>
           </h:form>
+        </c:if>
+        <c:if test="#{param['list'] eq 'userlogs'}">
+          <h:dataTable value="#{userLogsMangedBean.usersLogsList}" var="userlog" cellspacing="0" style="margin-top: 20px;">
+            <h:column>
+              <f:facet name="header">User</f:facet>
+              <h:outputText value="#{userlog.user}" />
+            </h:column>
+            <h:column>
+              <f:facet name="header">Login Date</f:facet>
+              <h:outputText value="#{userlog.login_date}" />
+            </h:column>
+            <h:column>
+              <f:facet name="header">Logout Date</f:facet>
+              <h:outputText value="#{userlog.logout_date}" />
+            </h:column>
+          </h:dataTable>
         </c:if>
       </f:view>
     </div>
