@@ -76,6 +76,33 @@ public class SessionUtil {
         }
     }
 
+    public static int getPeriod () {
+        HttpSession session = getSession ();
+        if (session != null) {
+            return (Integer) session.getAttribute("period");
+        } else {
+            return 1;
+        }
+    }
+    
+    public static String getCurrency () {
+        HttpSession session = getSession ();
+        if (session != null) {
+            return (String) session.getAttribute("currency");
+        } else {
+            return null;
+        }
+    }
+    
+    public static int getOpeningDays () {
+        HttpSession session = getSession ();
+        if (session != null) {
+            return (Integer) session.getAttribute("opening_days");
+        } else {
+            return 1;
+        }
+    }
+
     public static boolean isAdmin() {
         return "A".equalsIgnoreCase(SessionUtil.getUserRole());
     }
