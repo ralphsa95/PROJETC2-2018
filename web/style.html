@@ -2,8 +2,9 @@
   body {
       font-family: "Lato", sans-serif;
       margin-top: 0;
-      background: #D7E3F1;
+      
   }
+  .welcome{color:#022359;}
   .sidenav {
       height: 100%;
       width: 200px;
@@ -11,7 +12,7 @@
       z-index: 1;
       top: 0;
       left: 0;
-      background-color: #111;
+      background-color: #252736;
       overflow-x: hidden;
       padding-top: 20px;
   }
@@ -25,7 +26,7 @@
 }
 
 input[type=submit] {
-    background-color: blueviolet;
+    background-color: #022359;
     color: white;
     padding: 6px 10px;
     margin: 8px 0;
@@ -61,7 +62,7 @@ input[type=submit] {
 
 
   .active {
-      background-color: #C1C1FF;
+      background-color: #022359;
       color: white;
   }
 
@@ -91,7 +92,7 @@ input[type=submit] {
   A {
       text-decoration: none;} 
   ::-webkit-scrollbar {
-      width: 10px;
+      width: 5px;
   }
 
   /* Track */
@@ -107,20 +108,25 @@ input[type=submit] {
   }
 
   .header{
-      border-bottom: 2px solid white;
-      background: #C1C1FF;
+      border-bottom: 2px solid #022359;
+      background: #F1F3F4;
       margin: 0px -20px 0px -20px;
       padding: 10px 20px;
       text-align: left;
+      color:white;
   }
   .logout:visited, .logout{color:#b30000;}
   .message{width:50%;display: inline-block;margin-bottom: 5px;text-align: center;}
-  .success{background: #E3F2E1; color:#007B5A; border:1px solid #007B5A;}
+  .success{background: #F1F3F4; color:#022359; border:1px solid #022359;}
   .warning{background: #FBDF9F; color:#E6A044; border:1px solid #E6A044;}
   .error{background: #FF9E97; color:#FF4637;   border:1px solid #FF4637;}
   h3{color:#b30000;}
-
+  .view a:visited, .view a{color: #818181;}
+  .view a:hover{color: #022359;}
   .actdeactdel{text-align: right; }
   .actdeactdel a, .actdeactdel a:visited{color: #b30000;}
-  th{background: blueviolet}
+  th{background: #022359; color:white;border: 1px solid #818181;}
+  .schedule-th{min-width: 120px; text-align: center;display: block;background: #022359;color:white}
+  .schedule-th-period{width: 60px; text-align: center;display: inline-block;background-color: #022359;color:white}
+  #javax_faces_developmentstage_messages{display: none;}
 </style>
