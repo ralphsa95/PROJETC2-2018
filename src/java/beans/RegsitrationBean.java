@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import objects.*;
@@ -34,6 +33,8 @@ public class RegsitrationBean {
 
     public RegsitrationBean() {
     }
+    private String message;
+    private String styleClass;
 
     public void save() {
         boolean ok = true;
@@ -43,20 +44,14 @@ public class RegsitrationBean {
                     session.register(sc.getCourse(), sc.getSemester(), degree);
                 } catch (SQLException ex) {
                     ok = false;
-                    FacesContext.getCurrentInstance().addMessage(
-                            null,
-                            new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                    "Error: " + ex.toString(),
-                                    "Error: " + ex.toString()));
+                    styleClass = "error";
+                    message = "Error: " + ex.toString();
                 }
             }
         }
         if (ok) {
-            FacesContext.getCurrentInstance().addMessage(
-                    null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO,
-                            "Registered with success",
-                            "Registered with success"));
+            styleClass = "success";
+            message = "Registered with success";
         }
 
     }
@@ -90,6 +85,22 @@ public class RegsitrationBean {
 
     public void setCheckedCourse(Map<String, Boolean> checkedCourse) {
         this.checkedCourse = checkedCourse;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getStyleClass() {
+        return styleClass;
+    }
+
+    public void setStyleClass(String styleClass) {
+        this.styleClass = styleClass;
     }
 
 }
