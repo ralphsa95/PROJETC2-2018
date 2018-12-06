@@ -29,7 +29,7 @@ import session.SessionUtil;
  */
 @ManagedBean
 @SessionScoped
-public class DepartmentManagedBean {
+public class DepartmentManagedBean{
 
     private String code;
     private String name;
@@ -38,6 +38,8 @@ public class DepartmentManagedBean {
     String codeFilter;
     private boolean readonly;
     private boolean active;
+    private String message;
+    private String styleClass;
     SessionBean session = new SessionBean();
 
     public DepartmentManagedBean() {
@@ -72,6 +74,8 @@ public class DepartmentManagedBean {
         this.name = "";
         this.action = "";
         this.head = "";
+        message = "";
+        styleClass = "";
         this.readonly = false;
         this.active = true;
     }
@@ -160,25 +164,34 @@ public class DepartmentManagedBean {
     }
 
     public void save() {
-        String message = "";
-        Severity ms = null;
         try {
             Department d = new Department(code, name, head);
             boolean res = session.manageDepartment(d, action);
             if (res) {
-                message = "Department saved successfuly";
-                ms = FacesMessage.SEVERITY_INFO;
+                setMessage("Department saved successfuly");
+                setStyleClass("success");
             }
         } catch (SQLException ex) {
-            message = "Error: " + ex.toString();
-            ms = FacesMessage.SEVERITY_ERROR;
-            //Logger.getLogger(DepartmentManagedBean.class.getName()).log(Level.SEVERE, null, ex);
+            setMessage("Error: " + ex.toString());
+            setStyleClass("error");
+            Logger.getLogger(DepartmentManagedBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-        FacesContext.getCurrentInstance().addMessage(
-                null,
-                new FacesMessage(ms,
-                        message,
-                        message));
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getStyleClass() {
+        return styleClass;
+    }
+
+    public void setStyleClass(String styleClass) {
+        this.styleClass = styleClass;
     }
     
     
