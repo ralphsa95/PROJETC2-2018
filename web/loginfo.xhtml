@@ -8,8 +8,13 @@
   <ui:define name="header">
     <f:metadata>
       <f:viewParam name="type" value="#{userManagedBean.type}" />
+      <f:viewAction action="#{userManagedBean.onload}" />
     </f:metadata>
   </ui:define>
+  <h:head>
+    <title>UNI App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+  </h:head>
   <ui:include src="style.html" />
   <h:body style="text-align: center;">
     <f:view>
@@ -21,7 +26,7 @@
               <h:commandLink action="#{loginBean.logout}" value="Logout" class="logout" ></h:commandLink>
             </h:form>
           </span>
-          Welcome #{loginBean.name}
+          <span class="welcome">Welcome #{loginBean.name}</span>
           <div style="font-size: 12px; margin-top: 7px; color:#b30000">Year #{loginBean.year} &nbsp;Semester #{loginBean.semester}</div>
         </div>
         <h:form id="userlog">
@@ -44,7 +49,9 @@
               </td>
             </tr>
           </table>
-          <h:message for="loginsave" /> 
+          <div class="message #{userManagedBean.styleClass}">
+            <h:outputText value="#{userManagedBean.message}"  />
+          </div> 
         </h:form>
       </div>
     </f:view>
