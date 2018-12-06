@@ -5,8 +5,9 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
   <h:head>
-
-  </h:head> 
+    <title>UNI App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+  </h:head>
   <ui:include src="style.html" />
   <h:body style="text-align: center;">
     <f:view>
@@ -18,7 +19,7 @@
               <h:commandLink action="#{loginBean.logout}" value="Logout" class="logout" ></h:commandLink>
             </h:form>
           </span>
-          Welcome #{loginBean.name}
+          <span class="welcome">Welcome #{loginBean.name}</span>
           <div style="font-size: 12px; margin-top: 7px; color:#b30000">Year #{loginBean.year} &nbsp;Semester #{loginBean.semester}</div>
         </div>
         <div style="text-align: left;">
@@ -47,6 +48,9 @@
             </h:dataTable> 
             <h:commandButton value="Save" action="#{regsitrationBean.save}"  style="margin: 10px 0px;"/>
           </h:form>
+        </div>
+        <div class="message #{regsitrationBean.styleClass}">
+          <h:outputText value="#{regsitrationBean.message}"  />
         </div>
       </div>
     </f:view>
