@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+  <h:head>
+    <title>UNI App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+  </h:head>
+  <style>
+    tr, th, td {border: 1px solid #818181;}
+    table{box-shadow: 5px 5px 2px 0px rgba(226,231,233,0.75);}
+  </style>
+  <ui:include src="style.html" />
+  <h:body>
+    <f:view>
+      <ui:include src="side.html" />
+      <div class="main">
+        <div class="header">
+          <span style="float:right;">
+            <h:form>
+              <h:commandLink action="#{loginBean.logout}" value="Logout" class="logout" ></h:commandLink>
+            </h:form>
+          </span>
+          <span class="welcome">Welcome #{loginBean.name}</span>
+          <div style="font-size: 12px; margin-top: 7px; color:#b30000">Year #{loginBean.year} &nbsp;Semester #{loginBean.semester}</div>
+        </div>
+        <div style="text-align: center; padding-top: 20px;overflow-x: scroll;">
+          <h:form>
+            Course &nbsp;
+            <h:selectOneMenu value="#{historyManagedBean.table}" required="true" >
+              <f:selectItems value="#{historyManagedBean.tables}"/>
+            </h:selectOneMenu>&nbsp;&nbsp;
+            <h:commandButton value="Search" action="#{historyManagedBean.search}"/>
+          </h:form>
+          <h:panelGrid columns="#{historyManagedBean.columnsNumber}" cellpadding="0" cellspacing="0"  style="border-collapse: collapse;display: inline-block">
+
+            <c:forEach items="#{historyManagedBean.columns}" var="columnx">
+              <h:panelGroup styleClass="schedule-th">#{columnx}</h:panelGroup>
+            </c:forEach>
+
+            <c:forEach items="#{historyManagedBean.history}" var="row" >
+              <c:forEach items="#{row}" var="column">
+                <h:panelGroup>#{column}</h:panelGroup>
+              </c:forEach>
+            </c:forEach>
+
+          </h:panelGrid>
+        </div>
+      </div>
+    </f:view>
+  </h:body>
+  <ui:include src="after.html" />
+</html>
+
