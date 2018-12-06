@@ -23,31 +23,19 @@ import session.SessionUtil;
 public class CommonBean {
 
     SessionBean session = new SessionBean();
+    private String message;
+    private String styleClass;
 
-    public void delete(String table, String code) throws IOException {
+
+
+    public void deleteCommon(String table, String code) throws IOException {
         session.delete(table, code);
         FacesContext.getCurrentInstance().getExternalContext().redirect("/search.xhtml?list=" + table);
     }
 
-    public void actdeact(String table, String code, Boolean action) throws IOException {
+    public void actdeactCommon(String table, String code, Boolean action) throws IOException {
         session.actdeac(table, code, action);
         FacesContext.getCurrentInstance().getExternalContext().redirect("/search.xhtml?list=" + table);
-    }
-
-    public boolean isAdmin() {
-        return SessionUtil.isAdmin();
-    }
-
-    public boolean isHead() {
-        return SessionUtil.isHead();
-    }
-
-    public boolean isTeacher() {
-        return SessionUtil.isTeacher();
-    }
-
-    public boolean isStudent() {
-        return SessionUtil.isStudent();
     }
 
     public void dbBackup() {
@@ -59,5 +47,31 @@ public class CommonBean {
             Logger.getLogger(CommonBean.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    public void handleDBExecutions(Exception ex, String message) {
+        if (ex != null) {
+            setStyleClass("error");
+            setMessage("Error: " + ex);
+        } else {
+            setStyleClass("success");
+            setMessage(message);
+        }
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getStyleClass() {
+        return styleClass;
+    }
+
+    public void setStyleClass(String styleClass) {
+        this.styleClass = styleClass;
     }
 }
